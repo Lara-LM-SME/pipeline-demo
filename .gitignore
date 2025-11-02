@@ -1,0 +1,45 @@
+# ---- Python basics ----
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Virtual envs / environments
+.venv/
+venv/
+.env/
+.env
+.python-version
+
+# Byte-compiled / packaging / build
+dist/
+build/
+*.egg-info/
+.eggs/
+
+# Testing / coverage
+.pytest_cache/
+.coverage
+htmlcov/
+
+# Type checking / tooling
+.mypy_cache/
+.pytype/
+.pyre/
+
+# Jupyter
+.ipynb_checkpoints/
+
+# Editors & OS
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+
+# MLflow local tracking dir (uploaded as artifact in CI; ignore locally)
+mlruns/
+
+# Logs & temp
+logs/
+*.log
+*.tmp
+*.temp
