@@ -13,7 +13,7 @@ mlflow.start_run()
 print("MLflow tracking to local './mlruns' directory.")
 
 # ---------------- 2) Load data ----------------
-DATA_PATH = "data/reviews.csv"
+DATA_PATH = "data/reviews_fail.csv"
 
 # ------------------------------------------------------------
 # Use BOTH of these to explore CI pass/fail and fit quality:
