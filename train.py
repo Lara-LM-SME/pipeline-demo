@@ -14,6 +14,18 @@ print("MLflow tracking to local './mlruns' directory.")
 
 # ---------------- 2) Load data ----------------
 DATA_PATH = "data/reviews.csv"
+
+# ------------------------------------------------------------
+# Use BOTH of these to explore CI pass/fail and fit quality:
+# 1) DATA SOURCE: point to a big CSV (stable) or tiny CSV (fragile)
+#    - Full:  export DATA_PATH=data/reviews.csv
+#    - Tiny:  export DATA_PATH=data/reviews_fail.csv
+# 2) FLEXIBILITY KNOB (C): bigger C = more flexible (risk: overfit),
+#    smaller C = simpler (risk: underfit).
+#    - Likely PASS: python train.py 1.0
+#    - Likely FAIL: python train.py 1e-8   (esp. with tiny data or unigrams)
+# ------------------------------------------------------------
+
 assert os.path.exists(DATA_PATH), "Missing data/reviews.csv. Please add the CSV."
 
 df = pd.read_csv(DATA_PATH)
@@ -26,14 +38,17 @@ X_train_text, X_test_text, y_train, y_test = train_test_split(
 )
 print(f"Train size: {len(X_train_text)}, Test size: {len(X_test_text)}")
 
-# ---------------- 4) One simple knob: C ----------------
-C = 0.01
+# ---------------- 4) Validation lever: "C" controls model flexibility ----------------
+# Higher C  = higher cost for training mistakes -> less regularization -> more flexible model (overfit risk)
+# Lower C  = lower  cost for mistakes          -> more regularization -> simpler model   (underfit risk)
+# Tip: Use this along with DATA_PATH (full vs tiny) to force CI green/red on purpose for testing.
+C = 1.0  # default, change this, run python train.py 0.5 for example
 if len(sys.argv) > 1:
     try:
-        C = float(sys.argv[1])
+        C = float(sys.argv[1])  # e.g., python train.py 1.0  (likely PASS)
     except ValueError:
         print(f"Warning: invalid C '{sys.argv[1]}', using default {C}")
-mlflow.log_param("C", C)
+mlflow.log_param("C", C)  # keep runs auditable
 
 # ---------------- 5) Train (fit vectorizer ONLY on train) ----------------
 pipe = make_pipeline(

@@ -1,0 +1,4 @@
+text,sentiment,pred,correct
+"the tablet performs solid for daily use, very satisfied",1,1,1
+"the blender looks unreliable, quality is poor",0,1,0
+the watch feels unreliable,0,1,0
