@@ -43,3 +43,6 @@ logs/
 *.log
 *.tmp
 *.temp
+
+# Answer keys
+*ANSWER_KEY*

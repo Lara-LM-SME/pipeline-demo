@@ -13,12 +13,10 @@ mlflow.start_run()
 print("MLflow tracking to local './mlruns' directory.")
 
 # ---------------- 2) Load data ----------------
-DATA_PATH = "data/reviews_fail.csv"
+DATA_PATH = ""
 
 # ------------------------------------------------------------
-# DATA SOURCE: point to a big CSV (stable) or tiny CSV (fragile) to test pass/fail on Github Actions
-#    - Full:  export DATA_PATH=data/reviews.csv
-#    - Tiny:  export DATA_PATH=data/reviews_fail.csv
+# DATA SOURCE: point to the reviews CSV file in the project
 # ------------------------------------------------------------
 
 assert os.path.exists(DATA_PATH), "Missing data/reviews.csv. Please add the CSV."
@@ -34,9 +32,6 @@ X_train_text, X_test_text, y_train, y_test = train_test_split(
 print(f"Train size: {len(X_train_text)}, Test size: {len(X_test_text)}")
 
 # ---------------- 4) Validation lever: "C" controls model flexibility ----------------
-# Higher C  = higher cost for training mistakes -> less regularization -> more flexible model (overfit risk)
-# Lower C  = lower  cost for mistakes          -> more regularization -> simpler model   (underfit risk)
-# Tip: Use this along with DATA_PATH (full vs tiny) to force CI green/red on purpose for testing, but our data is too perfect at this stage for this to have much of an effect. 
 C = 1.0  # default is 1.0
 if len(sys.argv) > 1:
     try:
@@ -45,7 +40,7 @@ if len(sys.argv) > 1:
         print(f"Warning: invalid C '{sys.argv[1]}', using default {C}")
 mlflow.log_param("C", C)  # keep runs auditable
 
-# ---------------- 5) Train (fit vectorizer ONLY on train) ----------------
+# ---------------- 5) Train & Log (fit vectorizer ONLY on train) ----------------
 pipe = make_pipeline(
     TfidfVectorizer(ngram_range=(1,2), lowercase=True, min_df=1),
     LinearSVC(C=C, random_state=42)
@@ -58,7 +53,7 @@ mlflow.log_metric("accuracy", acc)
 print(f"Model Accuracy: {acc:.3f}")
 
 # ---------------- 6) Gate ----------------
-THRESH = 0.60
+THRESH = 
 if acc < THRESH:
     print(f"Validation Failed: Accuracy is below the {THRESH} threshold.")
     mlflow.end_run(status="FAILED")
